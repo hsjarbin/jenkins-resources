@@ -27,3 +27,34 @@ job('maven_dsl') {
         mailer('ricardo.andre.gonzalez07@gmail.com', true, true)
     }
 }
+
+################### ABIP
+job('maven-dsl') {
+
+    description('Maven DSL Project')
+
+    scm {
+        git('http://git:80/jenkins/maven.git', 'master', {node -> node / 'extensions' << '' })
+    }
+
+    steps {
+        maven {
+            mavenInstallation('jenkins-maven')
+            goals('-B -DskipTests clean package')
+        }
+        maven {
+            mavenInstallation('jenkins-maven')
+            goals('test')
+        }
+        shell('''
+            echo ************RUNNING THE JAR************************
+            java -jar /var/jenkins_home/workspace/maven-job/target/my-app-1.0-SNAPSHOT.jar
+        ''')
+    }
+
+    publishers {
+        archiveArtifacts('target/*.jar')
+        archiveJunit('target/surefire-reports/*.xml')
+        mailer('habiburrokhman.sjarbini@gmail.com', true, true)
+    }
+}
