@@ -36,6 +36,17 @@ job('maven-dsl') {
     scm {
         git('http://git:80/jenkins/maven.git', 'master', {node -> node / 'extensions' << '' })
     }
+    ### OR ###
+    scm {
+        git {
+          branch('master')
+          remote {
+            credentials('gitlab_user')
+            url('http://git:80/jenkins/maven.git')
+          }
+        }
+    }
+
 
     steps {
         maven {
